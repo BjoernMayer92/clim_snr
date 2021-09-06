@@ -15,7 +15,7 @@ def calc_noise_var(ensemble, ensemble_dim = "ensemble", sample_dim = "sample"):
     """
 
 
-    ensemble_mean = ensemble.mean(dim="ensemble")
+    ensemble_mean = ensemble.mean(dim=ensemble_dim)
     ensemble_clim = ensemble.mean(dim=(ensemble_dim, sample_dim))
 
 
