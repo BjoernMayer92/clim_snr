@@ -22,7 +22,7 @@ def calc_noise_var(ensemble, ensemble_dim = "ensemble", sample_dim = "sample"):
     return noise
 
 
-def calc_total_var(ensemble, ensemble_dim, sample_dim):
+def calc_total_var(ensemble, ensemble_dim = "ensemble", sample_dim = "sample"):
     """Calculates the total variance of a given ensemble forecast
 
     Args:
