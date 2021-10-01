@@ -16,8 +16,6 @@ def calc_noise_var(ensemble, ensemble_dim = "ensemble", sample_dim = "sample"):
 
 
     ensemble_mean = ensemble.mean(dim=ensemble_dim)
-    ensemble_clim = ensemble.mean(dim=(ensemble_dim, sample_dim))
-
 
     noise = xr.ufuncs.square(ensemble - ensemble_mean).mean(dim=(sample_dim, ensemble_dim), skipna=True)
 
@@ -56,6 +54,7 @@ def calc_signal_var(ensemble, ensemble_dim = "ensemble", sample_dim ="sample"):
 
     n_ensemble_members = ensemble.count(dim=ensemble_dim)
     ensemble_clim = ensemble.mean(dim=(ensemble_dim, sample_dim))
+    ensemble_mean = ensemble.mean(dim=ensemble_dim)
     residual_anomalies_squared = xr.ufuncs.square(ensemble_mean - ensemble_clim )
     n_total = n_ensemble_members.sum(dim = sample_dim)
 
@@ -86,6 +85,6 @@ def calc_sn_decomposition(ensemble, ensemble_dim="ensemble", sample_dim="sample"
     signal_var = signal_var.rename("signal_var")
     total_var = total_var.rename("total_var")
 
-    xr.testing.assert_allclose(snr_decomposition["noise_var"] + snr_decomposition["signal_var"],snr_decomposition["total_var"])
+    #xr.testing.assert_allclose(snr_decomposition["noise_var"] + snr_decomposition["signal_var"],snr_decomposition["total_var"])
 
     return xr.merge([noise_var, signal_var, total_var])
