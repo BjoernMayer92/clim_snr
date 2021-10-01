@@ -1,7 +1,7 @@
 import numpy as np
 import xarray as xr
 
-def siegert(n_samples, n_ensemble_members, mu_y = 0 , mu_x= 0 , beta = 1, sigma_s = 1, sigma_e = 1, sigma_eta = 1, output="xarray"):
+def gen_ensemble_siegert(n_samples, n_ensemble_members, mu_y = 0 , mu_x= 0 , beta = 1, sigma_s = 1, sigma_e = 1, sigma_eta = 1, sample_dim = "sample", ensemble_dim = "ensembl"):
     """Creates ensemble data with the method described in https://doi.org/10.1175/JCLI-D-15-0196.1
 
     Args:
@@ -14,9 +14,11 @@ def siegert(n_samples, n_ensemble_members, mu_y = 0 , mu_x= 0 , beta = 1, sigma_
         sigma_e (int, optional): Standard deviation of the truth noise. Defaults to 1.
         sigma_eta (int, optional): Standard deviation of the ensemble noise. Defaults to 1.
         output (str, optional): Whether output is given as xarray or numpy array. Defaults to "xarray".
+        sample_dim (str, optional): Name of the sample dimension. Defaults to "sample".
+        ensemble_dim (str, optional): Name of the ensemble dimension. Defaults to "ensemble".
 
     Returns:
-        [type]: [description]
+        [xarray Dataset]: Forecast Experiment
     """
 
 
@@ -42,11 +44,12 @@ def siegert(n_samples, n_ensemble_members, mu_y = 0 , mu_x= 0 , beta = 1, sigma_
 
     ensemble = mu_x + signal_ensemble[..., None] + noise_ensemble
     
-    if output=="xarray":
-        truth = xr.DataArray(truth, dims = ["sample"], coords = {"sample": range(n_samples)})
-        ensemble = xr.DataArray(ensemble, dims = ["sample","ensemble"], coords = {"sample": range(n_samples), "ensemble": range(max(n_ensemble_members))})
+    reference = xr.DataArray(truth, dims = [sample_dim], coords = {sample_dim: range(n_samples)})
+    forecast  = xr.DataArray(ensemble, dims = [sample_dim, ensembel_dim], coords = {sample_dim: range(n_samples), ensemble_dim: range(max(n_ensemble_members))})
 
-    return truth, ensemble
+    reference = reference.rename("reference")
+    forecast = forecast.rename("forecast")
+    return xr.merge([reference, forecast])
 
 
 
